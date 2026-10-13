@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/index.css">
+    <link id="tab-cloak-icon" rel="icon">
+    <title>Ale's Epik Education</title>
+    <script>
+        const pageParameters = new URLSearchParams(window.location.search);
+        window.isMenuPreview = pageParameters.get('menuPreview') === 'original';
+        const openSettingsOnLoad = pageParameters.get('openSettings') === '1';
+        const forceMenuChoice = pageParameters.get('chooseMenu') === '1';
+        const preferredSiteMenu = localStorage.getItem('preferredSiteMenu');
+        if (!window.isMenuPreview && !openSettingsOnLoad && !forceMenuChoice && preferredSiteMenu === 'wii') {
+            window.location.replace('wiimenu.html');
+        }
+        if (window.isMenuPreview) document.documentElement.classList.add('menu-preview');
+    </script>
+</head>
+<body class="home-page">
+    <time class="home-date" datetime=""></time>
+    <main class="home-primary">
+        <header>Ale's Epik Education V2</header>
+        <aside class="site-ad-slot site-ad-slot--home" aria-label="Advertisement">
+            <div id="container-784315d91ccc1b016a81104e22947d9e"></div>
+            <script>
+                if (!window.isMenuPreview) {
+                    const homeAdScript = document.createElement('script');
+                    homeAdScript.async = true;
+                    homeAdScript.dataset.cfasync = 'false';
+                    homeAdScript.src = 'https://pl31763270.profitableratecpmnetwork.com/784315d91ccc1b016a81104e22947d9e/invoke.js';
+                    document.currentScript.after(homeAdScript);
+                }
+            </script>
+        </aside>
+        <nav class="home-navigation" aria-label="Main navigation">
+            <a id="education" href="education.html">Education</a>
+            <a id="other-websites" href="otherwebsites.html">Other Websites</a>
+            <a id="search" href="search.html">Search</a>
+            <a id="partners" href="partners.html">Partners</a>
+        </nav>
+    </main>
+    <section id="menu-choice-screen" class="menu-choice-screen" role="dialog" aria-modal="true" aria-labelledby="menu-choice-title">
+        <h1 id="menu-choice-title" tabindex="-1">Which page do you want to use?</h1>
+        <div class="menu-choice-screen__buttons">
+            <button id="choose-wii-menu" type="button">
+                <span class="menu-choice-preview menu-choice-preview--wii">
+                    <iframe src="wiimenu.html?menuPreview=1" title="Live preview of Wii Menu" tabindex="-1" aria-hidden="true"></iframe>
+                </span>
+                <span class="menu-choice-screen__label">Wii Menu</span>
+            </button>
+            <button id="choose-original-menu" type="button">
+                <span class="menu-choice-preview menu-choice-preview--original">
+                    <iframe src="index.html?menuPreview=original" title="Live preview of Ale's Epik Education homepage" tabindex="-1" aria-hidden="true"></iframe>
+                </span>
+                <span class="menu-choice-screen__label">Original Ale's Epik Education</span>
+            </button>
+        </div>
+    </section>
+    <div id="home-message" aria-live="polite"></div>
+    <button id="settings" type="button" aria-expanded="false" aria-controls="settings-overlay">Settings</button>
+    <div id="settings-overlay" hidden>
+        <section id="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title" tabindex="-1">
+            <button id="settings-close" type="button" aria-label="Close settings">X</button>
+            <h2 id="settings-title">Settings</h2>
+            <button id="choose-background" type="button">Choose background</button>
+            <button id="reset-background" type="button">Use normal background</button>
+            <button id="halloween-mode" type="button" aria-pressed="false">Halloween Mode</button>
+            <button id="menu-preference-toggle" type="button" aria-expanded="false" aria-controls="menu-preference-options">Page to use</button>
+            <p class="settings-help-text">Your choice is remembered. You can change it here anytime.</p>
+            <div id="menu-preference-options" class="menu-preference-options" role="group" aria-label="Choose which page to use" hidden>
+                <button type="button" data-menu-option="wii" aria-pressed="false">Wii Menu</button>
+                <button type="button" data-menu-option="original" aria-pressed="false">Original Page</button>
+            </div>
+            <button id="tab-cloak-toggle" type="button" aria-expanded="false" aria-controls="tab-cloak-options">Tab Cloak</button>
+            <div id="tab-cloak-options" class="tab-cloak-options" role="group" aria-label="Tab cloak options" hidden>
+                <button id="classroom-tab-cloak" type="button" aria-pressed="false">Home - Classroom</button>
+                <button id="drive-tab-cloak" type="button" aria-pressed="false">Home - Google Drive</button>
+                <button id="clever-tab-cloak" type="button" aria-pressed="false">Clever</button>
+                <button id="iready-tab-cloak" type="button" aria-pressed="false">I-Ready</button>
+            </div>
+        </section>
+    </div>
+    <input id="background-file" type="file" accept="image/*" hidden>
+    <script>
+        const homeMessages = [
+            'Carry the 3 add the 2',
+            'Can securly just die broh',
+            'atleast I aint google sites slop',
+            'check out our discord for more links [https://discord.gg/4cvSYWyA4y]',
+            'Aw cheese rick',
+            'Teacher right behind you bro',
+            'Go ahead and close that tab for me',
+            'Wubba Lubba Dub Dub',
+            'Stop reading these and actually do something on here you bum',
+            'simply having a wondeful christmas time',
+            'I start to cry when you walk out the door',
+            'So close to a proxy trust',
+            'I-Ready gotta go broh'
+        ];
+        const homeMessageElement = document.querySelector('#home-message');
+        const menuChoiceScreen = document.querySelector('#menu-choice-screen');
+        const chooseWiiMenuButton = document.querySelector('#choose-wii-menu');
+        const chooseOriginalMenuButton = document.querySelector('#choose-original-menu');
+        const menuPreferenceToggle = document.querySelector('#menu-preference-toggle');
+        const menuPreferenceOptions = document.querySelector('#menu-preference-options');
+        const menuPreferenceOptionButtons = [...document.querySelectorAll('[data-menu-option]')];
+        const menuPreferenceStorageKey = 'preferredSiteMenu';
+
+        if (!window.isMenuPreview) {
+            const storedMenuPreference = localStorage.getItem(menuPreferenceStorageKey);
+            if (openSettingsOnLoad) {
+                menuChoiceScreen.hidden = true;
+            } else if (forceMenuChoice || !['wii', 'original'].includes(storedMenuPreference)) {
+                chooseWiiMenuButton.focus();
+                menuChoiceScreen.addEventListener('keydown', event => {
+                    if (event.key !== 'Tab') return;
+                    if (event.shiftKey && document.activeElement === chooseWiiMenuButton) {
+                        event.preventDefault();
+                        chooseOriginalMenuButton.focus();
+                    } else if (!event.shiftKey && document.activeElement === chooseOriginalMenuButton) {
+                        event.preventDefault();
+                        chooseWiiMenuButton.focus();
+                    }
+                });
+            } else {
+                menuChoiceScreen.hidden = true;
+            }
+            chooseWiiMenuButton.addEventListener('click', () => {
+                localStorage.setItem(menuPreferenceStorageKey, 'wii');
+                window.location.href = 'wiimenu.html';
+            });
+            chooseOriginalMenuButton.addEventListener('click', () => {
+                localStorage.setItem(menuPreferenceStorageKey, 'original');
+                menuChoiceScreen.hidden = true;
+                document.querySelector('.home-navigation a').focus();
+            });
+            menuPreferenceOptionButtons.forEach(button => {
+                button.setAttribute('aria-pressed', String(button.dataset.menuOption === storedMenuPreference));
+                button.addEventListener('click', () => {
+                    const selectedMenu = button.dataset.menuOption;
+                    localStorage.setItem(menuPreferenceStorageKey, selectedMenu);
+                    menuPreferenceOptionButtons.forEach(option => {
+                        option.setAttribute('aria-pressed', String(option === button));
+                    });
+                    menuPreferenceOptions.hidden = true;
+                    menuPreferenceToggle.setAttribute('aria-expanded', 'false');
+                    if (selectedMenu === 'wii') {
+                        window.location.href = 'wiimenu.html';
+                    } else {
+                        menuChoiceScreen.hidden = true;
+                    }
+                });
+            });
+            menuPreferenceToggle.addEventListener('click', () => {
+                const isExpanded = menuPreferenceToggle.getAttribute('aria-expanded') === 'true';
+                menuPreferenceToggle.setAttribute('aria-expanded', String(!isExpanded));
+                menuPreferenceOptions.hidden = isExpanded;
+            });
+        }
+
+        let lastMessageIndex = -1;
+
+        function chooseMessage() {
+            let messageIndex = Math.floor(Math.random() * homeMessages.length);
+            while (messageIndex === lastMessageIndex) {
+                messageIndex = Math.floor(Math.random() * homeMessages.length);
+            }
+            lastMessageIndex = messageIndex;
+            return homeMessages[messageIndex];
+        }
+
+        function showDiscordLink() {
+            homeMessageElement.textContent = '';
+            homeMessageElement.append('check out our discord for more links [');
+            const discordLink = document.createElement('a');
+            discordLink.href = 'https://discord.gg/4cvSYWyA4y';
+            discordLink.target = '_blank';
+            discordLink.rel = 'noopener noreferrer';
+            discordLink.textContent = 'https://discord.gg/4cvSYWyA4y';
+            homeMessageElement.append(discordLink, ']');
+        }
+
+        function typeMessage(message, characterIndex = 0) {
+            homeMessageElement.textContent = message.slice(0, characterIndex);
+            if (characterIndex < message.length) {
+                setTimeout(() => typeMessage(message, characterIndex + 1), 55);
+                return;
+            }
+
+            if (message.includes('https://discord.gg/4cvSYWyA4y')) {
+                showDiscordLink();
+            }
+            setTimeout(deleteMessage, 3500);
+        }
+
+        function deleteMessage(characterIndex) {
+            const currentText = homeMessageElement.textContent;
+            const remainingCharacters = characterIndex ?? currentText.length;
+            homeMessageElement.textContent = currentText.slice(0, remainingCharacters - 1);
+            if (remainingCharacters > 1) {
+                setTimeout(() => deleteMessage(remainingCharacters - 1), 35);
+                return;
+            }
+            setTimeout(() => typeMessage(chooseMessage()), 300);
+        }
+
+        typeMessage(chooseMessage());
+
+        const homeDate = new Date();
+        const homeDateElement = document.querySelector('.home-date');
+        const homeDateFormatter = new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        homeDateElement.textContent = homeDateFormatter.format(homeDate);
+        homeDateElement.dateTime = [
+            homeDate.getFullYear(),
+            String(homeDate.getMonth() + 1).padStart(2, '0'),
+            String(homeDate.getDate()).padStart(2, '0')
+        ].join('-');
+
+        const settingsButton = document.querySelector('#settings');
+        const settingsOverlay = document.querySelector('#settings-overlay');
+        const settingsPanel = document.querySelector('#settings-panel');
+        const settingsCloseButton = document.querySelector('#settings-close');
+        const chooseBackground = document.querySelector('#choose-background');
+        const resetBackground = document.querySelector('#reset-background');
+        const halloweenMode = document.querySelector('#halloween-mode');
+        const tabCloakToggle = document.querySelector('#tab-cloak-toggle');
+        const tabCloakOptions = document.querySelector('#tab-cloak-options');
+        const tabCloakButtons = {
+            classroom: document.querySelector('#classroom-tab-cloak'),
+            drive: document.querySelector('#drive-tab-cloak'),
+            clever: document.querySelector('#clever-tab-cloak'),
+            iready: document.querySelector('#iready-tab-cloak')
+        };
+        const tabCloakIcon = document.querySelector('#tab-cloak-icon');
+        const backgroundFile = document.querySelector('#background-file');
+        const defaultPageTitle = document.title;
+        const tabCloakOptionsById = {
+            classroom: {
+                title: 'Home - Classroom',
+                icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Google_Classroom_Logo.svg/3840px-Google_Classroom_Logo.svg.png'
+            },
+            drive: {
+                title: 'Home - Google Drive',
+                icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Google_Drive_icon_(2026).svg/1280px-Google_Drive_icon_(2026).svg.png'
+            },
+            clever: {
+                title: 'Resources',
+                icon: 'https://support.highlandschools.org/wp-content/uploads/2020/11/clever1.png'
+            },
+            iready: {
+                title: 'Math Home Page, i-Ready',
+                icon: 'https://image.winudf.com/v2/image1/Y29tLmJybmJ5LmlyZWFkeV9pY29uXzE1NzMyNTgzODRfMDAy/icon.png?w=340&fakeurl=1'
+            }
+        };
+        const tabCloakStorageKey = 'homeTabCloak';
+        const faceImage = 'https://www.pngmart.com/files/23/Epic-Face-PNG-Clipart.png';
+        const halloweenFaceImage = 'https://static.vecteezy.com/system/resources/previews/031/738/615/original/pumpkin-no-background-free-png.png';
+        const faceSize = 88;
+        let faceStates = [];
+        let faceAnimationFrame;
+        let settingsCloseTimeout;
+        let settingsAnimationFrame;
+
+        function setTabCloak(cloakId) {
+            const cloak = tabCloakOptionsById[cloakId];
+            document.title = cloak ? cloak.title : defaultPageTitle;
+            if (cloak) {
+                tabCloakIcon.href = cloak.icon;
+            } else {
+                tabCloakIcon.removeAttribute('href');
+            }
+            Object.entries(tabCloakButtons).forEach(([id, button]) => {
+                button.setAttribute('aria-pressed', String(id === cloakId));
+            });
+            if (cloakId) {
+                localStorage.setItem(tabCloakStorageKey, cloakId);
+            } else {
+                localStorage.removeItem(tabCloakStorageKey);
+            }
+        }
+
+        const savedTabCloak = localStorage.getItem(tabCloakStorageKey);
+        if (Object.hasOwn(tabCloakOptionsById, savedTabCloak)) {
+            setTabCloak(savedTabCloak);
+        }
+
+        function addParticles() {
+            document.querySelectorAll('.background-particle').forEach(particle => particle.remove());
+
+            for (let index = 0; index < 55; index++) {
+                const particle = document.createElement('span');
+                particle.className = 'background-particle';
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                particle.style.setProperty('--duration', `${6 + (index % 5) * 1.2}s`);
+                particle.style.setProperty('--delay', `${-(Math.random() * 6)}s`);
+                document.body.appendChild(particle);
+            }
+        }
+
+        function addMovingFaces() {
+            document.querySelectorAll('.floating-face').forEach(face => face.remove());
+            faceStates = [];
+            cancelAnimationFrame(faceAnimationFrame);
+
+            for (let index = 0; index < 12; index++) {
+                const face = document.createElement('img');
+                face.className = 'floating-face';
+                face.src = faceImage;
+                face.alt = '';
+                const state = {
+                    element: face,
+                    x: 8 + ((index * 17) % 84) * window.innerWidth / 100,
+                    y: 12 + ((index * 23) % 74) * window.innerHeight / 100,
+                    vx: (Math.random() - 0.5) * 2.5,
+                    vy: (Math.random() - 0.5) * 2.5
+                };
+                faceStates.push(state);
+                face.addEventListener('click', () => {
+                    state.vx = (Math.random() - 0.5) * 12;
+                    state.vy = -7 - Math.random() * 5;
+                });
+                document.body.appendChild(face);
+            }
+
+            moveFaces();
+        }
+
+        function moveFaces() {
+            faceStates.forEach(state => {
+                state.x += state.vx;
+                state.y += state.vy;
+                state.vy += 0.08;
+
+                if (state.x <= 0 || state.x >= window.innerWidth - faceSize) {
+                    state.x = Math.max(0, Math.min(state.x, window.innerWidth - faceSize));
+                    state.vx *= -1;
+                }
+                if (state.y <= 0 || state.y >= window.innerHeight - faceSize) {
+                    state.y = Math.max(0, Math.min(state.y, window.innerHeight - faceSize));
+                    state.vy *= -0.9;
+                }
+
+                state.element.style.left = `${state.x}px`;
+                state.element.style.top = `${state.y}px`;
+            });
+
+            faceAnimationFrame = requestAnimationFrame(moveFaces);
+        }
+
+        function useNormalBackground() {
+            localStorage.removeItem('homeBackground');
+            document.body.classList.remove('halloween-mode');
+            document.body.style.backgroundImage = '';
+            halloweenMode.setAttribute('aria-pressed', 'false');
+            addMovingFaces();
+            addParticles();
+        }
+
+        function useHalloweenMode() {
+            localStorage.removeItem('homeBackground');
+            document.body.classList.add('halloween-mode');
+            document.body.style.backgroundImage = '';
+            halloweenMode.setAttribute('aria-pressed', 'true');
+            document.querySelectorAll('.floating-face').forEach(face => {
+                face.src = halloweenFaceImage;
+            });
+            addParticles();
+        }
+
+        const savedBackground = localStorage.getItem('homeBackground');
+
+        if (savedBackground) {
+            document.body.style.backgroundImage = `url("${savedBackground}")`;
+        } else {
+            addMovingFaces();
+            addParticles();
+        }
+
+        function closeSettings(restoreFocus = true) {
+            cancelAnimationFrame(settingsAnimationFrame);
+            settingsOverlay.classList.remove('is-open');
+            settingsButton.setAttribute('aria-expanded', 'false');
+            clearTimeout(settingsCloseTimeout);
+            settingsCloseTimeout = setTimeout(() => {
+                if (!settingsOverlay.classList.contains('is-open')) {
+                    settingsOverlay.hidden = true;
+                    document.body.classList.remove('settings-open');
+                }
+            }, 220);
+            if (restoreFocus) settingsButton.focus();
+        }
+
+        function openSettings() {
+            clearTimeout(settingsCloseTimeout);
+            settingsOverlay.hidden = false;
+            document.body.classList.add('settings-open');
+            settingsButton.setAttribute('aria-expanded', 'true');
+            settingsAnimationFrame = requestAnimationFrame(() => {
+                settingsOverlay.classList.add('is-open');
+            });
+            settingsCloseButton.focus();
+        }
+
+        settingsButton.addEventListener('click', () => {
+            if (settingsOverlay.hidden) {
+                openSettings();
+            } else {
+                closeSettings();
+            }
+        });
+        if (openSettingsOnLoad && !window.isMenuPreview) openSettings();
+        settingsCloseButton.addEventListener('click', () => closeSettings());
+        settingsOverlay.addEventListener('click', event => {
+            if (event.target === settingsOverlay) closeSettings();
+        });
+        document.addEventListener('keydown', event => {
+            if (settingsOverlay.hidden) return;
+            if (event.key === 'Escape') {
+                closeSettings();
+                return;
+            }
+
+            if (event.key === 'Tab') {
+                const focusableElements = [...settingsPanel.querySelectorAll('button:not([disabled])')]
+                    .filter(element => !element.closest('[hidden]'));
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+                if (event.shiftKey && document.activeElement === firstElement) {
+                    event.preventDefault();
+                    lastElement.focus();
+                } else if (!event.shiftKey && document.activeElement === lastElement) {
+                    event.preventDefault();
+                    firstElement.focus();
+                }
+            }
+        });
+        chooseBackground.addEventListener('click', () => {
+            closeSettings(false);
+            backgroundFile.click();
+        });
+        backgroundFile.addEventListener('change', () => {
+            const selectedFile = backgroundFile.files[0];
+            if (!selectedFile) return;
+
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                document.body.style.backgroundImage = `url("${reader.result}")`;
+                localStorage.setItem('homeBackground', reader.result);
+                document.querySelectorAll('.floating-face').forEach(face => face.remove());
+                document.querySelectorAll('.background-particle').forEach(particle => particle.remove());
+            });
+            reader.readAsDataURL(selectedFile);
+        });
+        resetBackground.addEventListener('click', () => {
+            useNormalBackground();
+            closeSettings();
+        });
+        halloweenMode.addEventListener('click', () => {
+            if (document.body.classList.contains('halloween-mode')) {
+                useNormalBackground();
+            } else {
+                useHalloweenMode();
+            }
+        });
+        tabCloakToggle.addEventListener('click', () => {
+            const isExpanded = tabCloakToggle.getAttribute('aria-expanded') === 'true';
+            tabCloakToggle.setAttribute('aria-expanded', String(!isExpanded));
+            tabCloakOptions.hidden = isExpanded;
+        });
+        Object.entries(tabCloakButtons).forEach(([id, button]) => {
+            button.addEventListener('click', () => {
+                const isEnabled = button.getAttribute('aria-pressed') === 'true';
+                setTabCloak(isEnabled ? null : id);
+            });
+        });
+
+    </script>
+    <script>
+        if (!window.isMenuPreview) {
+            const overlayMenuScript = document.createElement('script');
+            overlayMenuScript.src = 'js/overlay-tab.js';
+            document.body.appendChild(overlayMenuScript);
+
+            window.atOptions = {
+                key: '4a6f9e0ab8cdcfb55b382a3781159e06',
+                format: 'iframe',
+                height: 60,
+                width: 468,
+                params: {}
+            };
+            const highRevenueAdScript = document.createElement('script');
+            highRevenueAdScript.src = 'https://www.highrevenueformat.com/4a6f9e0ab8cdcfb55b382a3781159e06/invoke.js';
+            document.body.appendChild(highRevenueAdScript);
+
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+.search-notice {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 3;
+    width: min(360px, calc(100vw - 40px));
+    margin: 0;
+    color: white;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: left;
+}
+
+.search-page {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin: 0 auto;
+    padding: 36px 20px;
+    box-sizing: border-box;
+    color: white;
+    text-align: center;
+}
+
+.search-page h1 {
+    margin: 0 0 24px;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.search-form {
+    display: grid;
+    gap: 10px;
+    margin: 0 auto 24px;
+}
+
+.search-form label {
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.search-controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+#search-input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 2px solid white;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font: inherit;
+}
+
+.search-controls button {
+    min-width: 72px;
+    padding: 0 16px;
+    border: 2px solid white;
+    border-radius: 8px;
+    color: white;
+    background: #211035;
+    font: inherit;
+    cursor: pointer;
+}
+
+.search-controls button:hover,
+.search-controls button:focus {
+    background: #6f3997;
+}
+
+.fullscreen-control {
+    position: fixed;
+    right: 32px;
+    bottom: 8px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 2px solid white;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: white;
+    background-color: #111;
+    background-image: url("https://static.vecteezy.com/system/resources/previews/023/871/323/non_2x/off-white-logo-brand-white-symbol-design-clothes-icon-abstract-illustration-with-black-background-free-vector.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-size: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.fullscreen-control:hover,
+.fullscreen-control:focus {
+    background-color: #6f3997;
+}
+
+.refresh-control {
+    position: fixed;
+    right: 88px;
+    bottom: 8px;
+    z-index: 20;
+    min-width: 48px;
+    height: 48px;
+    padding: 0 10px;
+    border: 2px solid white;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: white;
+    background: #111;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.chromebook-mode-control {
+    position: fixed;
+    right: 32px;
+    bottom: 64px;
+    z-index: 20;
+    width: 184px;
+    height: 48px;
+    padding: 0 8px;
+    border: 2px solid white;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: white;
+    background: #111;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.refresh-control:hover,
+.refresh-control:focus,
+.chromebook-mode-control:hover,
+.chromebook-mode-control:focus {
+    background: #6f3997;
+}
+
+.iframe-refresh-notice {
+    position: fixed;
+    left: 16px;
+    bottom: 10px;
+    z-index: 20;
+    max-width: min(360px, calc(100vw - 180px));
+    margin: 0;
+    padding: 6px 9px;
+    border-radius: 6px;
+    box-sizing: border-box;
+    color: white;
+    background: rgba(0, 0, 0, 0.78);
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+#search-frame {
+    display: block;
+    width: 88vw;
+    height: 88vh;
+    margin: 6vh auto;
+    border: 2px solid white;
+    border-radius: 16px;
+    box-sizing: border-box;
+    background: white;
+}
+
+body.chromebook-mode {
+    background: #000;
+    background-image: none;
+}
+
+body.chromebook-mode .search-notice,
+body.chromebook-mode .search-page h1,
+body.chromebook-mode .floating-face,
+body.chromebook-mode .background-particle,
+body.chromebook-mode .iframe-refresh-notice {
+    display: none !important;
+    animation: none !important;
+}
+
+body.chromebook-mode .search-page {
+    padding: 12px 8px;
+}
+
+body.chromebook-mode #search-frame {
+    width: calc(100vw - 16px);
+    height: calc(100dvh - 156px);
+    margin: 8px auto;
+    border: 0;
+    border-radius: 8px;
+}
+
+@media (max-width: 560px) {
+    .search-controls {
+        flex-direction: column;
+    }
+
+    .search-controls button {
+        min-height: 44px;
+    }
+}

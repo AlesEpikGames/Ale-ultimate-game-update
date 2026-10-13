@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/index.css">
+    <link id="tab-cloak-icon" rel="icon">
+    <title>Wii Menu - Ale's Epik Education</title>
+</head>
+<body class="wii-page">
+    <main class="wii-menu-screen" aria-labelledby="wii-menu-title">
+        <h1 id="wii-menu-title" class="visually-hidden">Wii Menu</h1>
+        <nav class="wii-menu-screen__channels" aria-label="Wii-style site menu">
+            <button id="wii-disc-channel" class="wii-channel wii-channel--disc" type="button" aria-label="Choose an HTML file to preview">
+                <span class="wii-disc-icon" aria-hidden="true"></span>
+            </button>
+            <a class="wii-channel wii-channel--mii-maker" href="partners.html" aria-label="Mii Maker">
+                <img src="images/wii-mii-maker.png" alt="">
+            </a>
+            <a class="wii-channel wii-channel--websites" href="otherwebsites.html" aria-label="Other Websites">
+                <img src="images/wii-photo-channel.png" alt="">
+            </a>
+            <a class="wii-channel wii-channel--education" href="education.html" aria-label="Education">
+                <img src="images/wii-education-channel.png" alt="">
+            </a>
+            <a class="wii-channel wii-channel--search" href="search.html" aria-label="Search">
+                <img src="images/wii-forecast-channel.png" alt="">
+            </a>
+            <span class="wii-channel-placeholder" aria-hidden="true"></span>
+            <span class="wii-channel-placeholder" aria-hidden="true"></span>
+            <span class="wii-channel-placeholder" aria-hidden="true"></span>
+            <span class="wii-channel-placeholder" aria-hidden="true"></span>
+            <span class="wii-channel-placeholder" aria-hidden="true"></span>
+            <span class="wii-channel-placeholder" aria-hidden="true"></span>
+            <span class="wii-channel-placeholder" aria-hidden="true"></span>
+        </nav>
+        <footer class="wii-menu-screen__footer">
+            <div class="wii-menu-screen__controls">
+                <button id="wii-settings-open" class="wii-menu-screen__back" type="button" aria-label="Settings" aria-haspopup="dialog">Wii</button>
+            </div>
+            <div class="wii-menu-screen__date-time" aria-live="off">
+                <time id="wii-menu-clock"><span id="wii-menu-clock-time"></span><span id="wii-menu-clock-period"></span></time>
+                <time id="wii-menu-date"></time>
+                <div class="wii-menu-ad" aria-label="Advertisement">
+                    <script>
+                        if (new URLSearchParams(window.location.search).get('menuPreview') !== '1') {
+                            window.atOptions = {
+                                key: '1417c0da4d5de560b2ff408a46300197',
+                                format: 'iframe',
+                                height: 50,
+                                width: 320,
+                                params: {}
+                            };
+                            const wiiMenuAdScript = document.createElement('script');
+                            wiiMenuAdScript.async = true;
+                            wiiMenuAdScript.src = 'https://www.highrevenueformat.com/1417c0da4d5de560b2ff408a46300197/invoke.js';
+                            document.currentScript.after(wiiMenuAdScript);
+                        }
+                    </script>
+                </div>
+            </div>
+            <a class="wii-menu-screen__mail" href="partners.html" aria-label="Open Partners">✉</a>
+        </footer>
+        <input id="wii-html-file" type="file" accept=".html,.htm,text/html" hidden>
+        <dialog id="wii-html-preview" class="wii-html-preview" aria-labelledby="wii-html-preview-title">
+            <header class="wii-html-preview__header">
+                <h2 id="wii-html-preview-title">Disc Channel</h2>
+                <div class="wii-html-preview__actions">
+                    <button id="wii-html-refresh" type="button" disabled>Refresh</button>
+                    <button id="wii-html-fullscreen" type="button" disabled>Fullscreen</button>
+                    <button id="wii-html-close" type="button" aria-label="Close preview">×</button>
+                </div>
+            </header>
+            <p id="wii-html-status" class="wii-html-preview__status" role="status">Choose an HTML file to preview it.</p>
+            <iframe id="wii-html-frame" title="HTML file preview" sandbox="allow-scripts allow-forms allow-pointer-lock" allow="fullscreen"></iframe>
+        </dialog>
+        <dialog id="wii-settings-dialog" class="wii-settings-dialog" aria-labelledby="wii-settings-title">
+            <button id="wii-settings-close" class="wii-settings-dialog__close" type="button" aria-label="Close settings">×</button>
+            <h2 id="wii-settings-title">Settings</h2>
+            <p>Choose which page to use. You can change this anytime in Settings.</p>
+            <button id="wii-menu-preference-toggle" class="wii-settings-dialog__toggle" type="button" aria-expanded="false" aria-controls="wii-menu-preference-options">Page to use</button>
+            <div id="wii-menu-preference-options" class="wii-settings-dialog__options" role="group" aria-label="Choose which page to use" hidden>
+                <button type="button" data-wii-menu-option="wii" aria-pressed="false">Wii Menu</button>
+                <button type="button" data-wii-menu-option="original" aria-pressed="false">Original Page</button>
+            </div>
+        </dialog>
+    </main>
+    <script>
+        const wiiDiscChannel = document.querySelector('#wii-disc-channel');
+        const wiiHtmlFileInput = document.querySelector('#wii-html-file');
+        const wiiHtmlPreview = document.querySelector('#wii-html-preview');
+        const wiiHtmlFrame = document.querySelector('#wii-html-frame');
+        const wiiHtmlStatus = document.querySelector('#wii-html-status');
+        const wiiHtmlRefresh = document.querySelector('#wii-html-refresh');
+        const wiiHtmlFullscreen = document.querySelector('#wii-html-fullscreen');
+        const wiiHtmlClose = document.querySelector('#wii-html-close');
+        let wiiHtmlObjectUrl = null;
+
+        wiiDiscChannel.addEventListener('click', () => wiiHtmlFileInput.click());
+        wiiHtmlFileInput.addEventListener('change', () => {
+            const selectedFile = wiiHtmlFileInput.files?.[0];
+            if (!selectedFile) return;
+
+            if (!/\.html?$/i.test(selectedFile.name)) {
+                wiiHtmlStatus.textContent = 'Please choose an .html or .htm file.';
+                wiiHtmlFileInput.value = '';
+                wiiHtmlPreview.showModal();
+                return;
+            }
+
+            if (wiiHtmlObjectUrl) URL.revokeObjectURL(wiiHtmlObjectUrl);
+            wiiHtmlObjectUrl = URL.createObjectURL(selectedFile);
+            wiiHtmlFrame.src = wiiHtmlObjectUrl;
+            wiiHtmlStatus.textContent = `Previewing ${selectedFile.name}`;
+            wiiHtmlRefresh.disabled = false;
+            wiiHtmlFullscreen.disabled = false;
+            wiiHtmlPreview.showModal();
+        });
+
+        wiiHtmlRefresh.addEventListener('click', () => {
+            if (!wiiHtmlObjectUrl) return;
+            wiiHtmlFrame.src = wiiHtmlObjectUrl;
+        });
+
+        wiiHtmlFullscreen.addEventListener('click', async () => {
+            if (!wiiHtmlObjectUrl) return;
+            try {
+                await wiiHtmlFrame.requestFullscreen();
+            } catch (error) {
+                wiiHtmlStatus.textContent = 'Fullscreen is unavailable in this browser.';
+            }
+        });
+
+        wiiHtmlClose.addEventListener('click', () => wiiHtmlPreview.close());
+        wiiHtmlPreview.addEventListener('click', event => {
+            if (event.target === wiiHtmlPreview) wiiHtmlPreview.close();
+        });
+        window.addEventListener('pagehide', () => {
+            if (wiiHtmlObjectUrl) URL.revokeObjectURL(wiiHtmlObjectUrl);
+        }, { once: true });
+
+        const wiiSettingsDialog = document.querySelector('#wii-settings-dialog');
+        const wiiSettingsOpenButton = document.querySelector('#wii-settings-open');
+        const wiiSettingsCloseButton = document.querySelector('#wii-settings-close');
+        const wiiMenuPreferenceToggle = document.querySelector('#wii-menu-preference-toggle');
+        const wiiMenuPreferenceOptions = document.querySelector('#wii-menu-preference-options');
+        const wiiMenuPreferenceButtons = [...document.querySelectorAll('[data-wii-menu-option]')];
+        const preferredSiteMenuKey = 'preferredSiteMenu';
+
+        function openWiiSettings(expandPageOptions = false) {
+            if (!wiiSettingsDialog.open) wiiSettingsDialog.showModal();
+            if (expandPageOptions) {
+                wiiMenuPreferenceOptions.hidden = false;
+                wiiMenuPreferenceToggle.setAttribute('aria-expanded', 'true');
+                wiiMenuPreferenceToggle.focus();
+            } else {
+                wiiSettingsCloseButton.focus();
+            }
+        }
+
+        wiiSettingsOpenButton.addEventListener('click', () => openWiiSettings());
+        wiiSettingsCloseButton.addEventListener('click', () => wiiSettingsDialog.close());
+        wiiSettingsDialog.addEventListener('click', event => {
+            if (event.target === wiiSettingsDialog) wiiSettingsDialog.close();
+        });
+
+        const savedSiteMenu = localStorage.getItem(preferredSiteMenuKey);
+        wiiMenuPreferenceButtons.forEach(button => {
+            button.setAttribute('aria-pressed', String(button.dataset.wiiMenuOption === savedSiteMenu));
+            button.addEventListener('click', () => {
+                const selectedMenu = button.dataset.wiiMenuOption;
+                localStorage.setItem(preferredSiteMenuKey, selectedMenu);
+                wiiMenuPreferenceButtons.forEach(option => {
+                    option.setAttribute('aria-pressed', String(option === button));
+                });
+                if (selectedMenu === 'original') {
+                    window.location.href = 'index.html';
+                } else {
+                    wiiSettingsDialog.close();
+                }
+            });
+        });
+
+        wiiMenuPreferenceToggle.addEventListener('click', () => {
+            const isExpanded = wiiMenuPreferenceToggle.getAttribute('aria-expanded') === 'true';
+            wiiMenuPreferenceToggle.setAttribute('aria-expanded', String(!isExpanded));
+            wiiMenuPreferenceOptions.hidden = isExpanded;
+        });
+
+        const wiiMenuClock = document.querySelector('#wii-menu-clock');
+        const wiiMenuClockTime = document.querySelector('#wii-menu-clock-time');
+        const wiiMenuClockPeriod = document.querySelector('#wii-menu-clock-period');
+        const wiiMenuDate = document.querySelector('#wii-menu-date');
+        const wiiClockFormatter = new Intl.DateTimeFormat('en-US', {
+            hour: 'numeric',
+            minute: '2-digit'
+        });
+        const wiiDateFormatter = new Intl.DateTimeFormat('en-US', {
+            weekday: 'short',
+            month: 'numeric',
+            day: 'numeric'
+        });
+
+        function updateWiiMenuClock() {
+            const now = new Date();
+            const clockParts = wiiClockFormatter.formatToParts(now);
+            wiiMenuClockTime.textContent = clockParts
+                .filter((part) => part.type !== 'dayPeriod' && (part.type !== 'literal' || part.value.includes(':')))
+                .map((part) => part.value)
+                .join('');
+            wiiMenuClockPeriod.textContent = clockParts.find((part) => part.type === 'dayPeriod')?.value ?? '';
+            wiiMenuDate.textContent = wiiDateFormatter.format(now);
+        }
+
+        updateWiiMenuClock();
+        window.setInterval(updateWiiMenuClock, 1000);
+    </script>
+</body>
+</html>
